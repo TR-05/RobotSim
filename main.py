@@ -1,5 +1,6 @@
 import sys, pygame
 import robot
+import vector2d as v2d
 from pygame.locals import K_LEFT, K_RIGHT, K_UP, K_DOWN
 
 pygame.init()
@@ -13,7 +14,7 @@ clock = pygame.time.Clock()            #get a pygame clock object
 robotImage = pygame.image.load('Assets/logo42.png').convert()
 robotImage = pygame.transform.scale(robotImage, (50, 50))
 
-bot = robot.ROBOT(WIDTH/2, HEIGHT/2)
+bot = robot.ROBOT(WIDTH/2, HEIGHT/2, FPS)
 background = pygame.image.load('Assets/VURCSkills.png').convert()
 background = pygame.transform.scale(background, (640, 640))
 background = pygame.transform.rotate(background, 90)
@@ -22,20 +23,21 @@ screen.blit(background, (0, 0))
 
 def getInput():
     keys=pygame.key.get_pressed()
+    lpct = 0
+    apct = 0
     if keys[K_LEFT]:
-        bot.angularSpeed = 140/FPS
+        apct = 140/FPS
     elif keys[K_RIGHT]:
-        bot.angularSpeed = -140/FPS
+        apct = -140/FPS
     else:
-        bot.angularSpeed = 0
+        lpct = 0
     if keys[K_UP]:
-        bot.linearSpeed = 200/FPS
+        lpct = 100
     elif keys[K_DOWN]:
-        bot.linearSpeed = -200/FPS
+        lpct = -100
     else:
-        bot.linearSpeed = 0
-    bot.setSpeed(bot.linearSpeed, bot.angularSpeed)
-    bot.addPose(bot.vx, bot.vy, bot.angularSpeed)
+        lpct = 0
+    bot.update(lpct, apct)
 time = 0
 while True:
     time += 1/FPS
